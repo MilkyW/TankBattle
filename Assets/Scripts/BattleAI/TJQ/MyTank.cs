@@ -89,5 +89,10 @@ namespace TJQ
         {
             return "TJQ";
         }
+
+        private void OnDrawGizmos()
+        {
+            
+        }
     }
 }

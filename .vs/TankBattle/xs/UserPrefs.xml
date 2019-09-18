@@ -1,15 +1,14 @@
 ﻿<Properties StartupConfiguration="{FA470E05-34A9-DF96-F3A0-23198318BFE5}|">
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/BattleAI/WXR/MyTank.cs">
     <Files>
-      <File FileName="../LearnUnityEveryday/Demos/TankAI/TankAI2/Assets/TanksMultiplayer/Scripts/SemiAIController.cs" Line="1377" Column="56" />
-      <File FileName="Assets/Scripts/Main/Tank.cs" Line="32" Column="14" />
-      <File FileName="Assets/Scripts/Main/Match.cs" Line="57" Column="38" />
-      <File FileName="Assets/Scripts/BattleAI/WXR/MyTank.cs" Line="122" Column="30" />
+      <File FileName="Assets/Scripts/BattleAI/WXR/MyTank.cs" Line="208" Column="22" />
+      <File FileName="Assets/Scripts/Main/Physics.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/BattleAI/TJQ/MyTank.cs" Line="24" Column="2" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="9083c033-1b3d-460b-b6a9-195cb5685e4b" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="c9972a89-3f2d-491e-94a6-c3db924d9d1e" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
