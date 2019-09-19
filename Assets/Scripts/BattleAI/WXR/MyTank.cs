@@ -111,7 +111,8 @@ namespace WXR
                     findTarget = false;
                     float timeReach = ((target - Position).magnitude - knowledge.turretLength) / knowledge.missileSpeed;
                     float timeSimulation = 0;
-                    float timeSlice = 0.01f;
+                    const float timeSlice = 0.01f;
+                    const float minSpeed = 0.001f;
                     lastPosition = knowledge.enemy.Position;
                     lastSpeed = (lastPosition - knowledge.hisLastPosition) / Time.deltaTime;
                     knowledge.hisExpectedRoute.Clear();
@@ -121,9 +122,15 @@ namespace WXR
                         while ((lastPosition - p).sqrMagnitude > 1)
                         {
                             Vector3 toForward = p - lastPosition;
-                            float angle = Mathf.Abs(Vector3.Angle(lastSpeed, toForward));
 
-                            if (angle < 90)
+                            if (lastSpeed.magnitude < minSpeed)
+                            {
+                                lastSpeed = minSpeed * toForward.normalized;
+                            }
+
+                            float angle = Vector3.Angle(lastSpeed, toForward);
+
+                            if (Mathf.Abs(angle) < 90)
                             {
                                 if (lastSpeed.magnitude < knowledge.tankSpeed)
                                 {
@@ -135,7 +142,6 @@ namespace WXR
                             }
                             else
                             {
-                                const float minSpeed = 0.001f;
                                 if (lastSpeed.magnitude > minSpeed)
                                 {
                                     if (lastSpeed.magnitude - knowledge.tankAcceleration * timeSlice > minSpeed)
@@ -145,8 +151,20 @@ namespace WXR
                                 }
                             }
 
-                            Vector3.RotateTowards(lastSpeed, toForward,
-                                knowledge.tankAngularSpeed * Mathf.Deg2Rad * timeSlice, 0.0f);
+                            float angleDelta = knowledge.tankAngularSpeed * Mathf.Deg2Rad * timeSlice;
+
+                            if (Mathf.Abs(angle) < angleDelta)
+                            {
+                                lastSpeed = lastSpeed.magnitude * toForward.normalized;
+                            }
+
+                            else
+                            {
+                                lastSpeed = Quaternion.AngleAxis(angleDelta * (angle > 0 ? 1 : -1), Vector3.up) * lastSpeed;
+                            }
+
+                            //Vector3.RotateTowards(lastSpeed, toForward,
+                            //knowledge.tankAngularSpeed * Mathf.Deg2Rad * timeSlice, 0.0f);
 
                             lastPosition += lastSpeed * timeSlice;
                             knowledge.hisExpectedRoute.Add(lastPosition);
@@ -196,15 +214,22 @@ namespace WXR
             Vector3 lastSpeed = (origin - lastPosition) / Time.deltaTime;
             lastPosition = origin;
             float timeSimulation = 0;
-            float timeSlice = 0.01f;
-            foreach (var p in knowledge.hisRoute)
+            const float timeSlice = 0.01f;
+            const float minSpeed = 0.001f;
+            foreach (var p in positions)
             {
                 while ((lastPosition - p).sqrMagnitude > 1)
                 {
                     Vector3 toForward = p - lastPosition;
-                    float angle = Mathf.Abs(Vector3.Angle(lastSpeed, toForward));
 
-                    if (angle < 90)
+                    if (lastSpeed.magnitude < minSpeed)
+                    {
+                        lastSpeed = minSpeed * toForward.normalized;
+                    }
+
+                    float angle = Vector3.Angle(lastSpeed, toForward);
+
+                    if (Mathf.Abs(angle) < 90)
                     {
                         if (lastSpeed.magnitude < knowledge.tankSpeed)
                         {
@@ -216,7 +241,6 @@ namespace WXR
                     }
                     else
                     {
-                        const float minSpeed = 0.001f;
                         if (lastSpeed.magnitude > minSpeed)
                         {
                             if (lastSpeed.magnitude - knowledge.tankAcceleration * timeSlice > minSpeed)
@@ -226,8 +250,19 @@ namespace WXR
                         }
                     }
 
-                    Vector3.RotateTowards(lastSpeed, toForward,
-                        knowledge.tankAngularSpeed * Mathf.Deg2Rad * timeSlice, 0.0f);
+                    float angleDelta = knowledge.tankAngularSpeed * Mathf.Deg2Rad * timeSlice;
+
+                    if (Mathf.Abs(angle) < angleDelta)
+                    {
+                        lastSpeed = lastSpeed.magnitude * toForward.normalized;
+                    }
+
+                    else
+                    {
+                        lastSpeed = Quaternion.AngleAxis(angleDelta * (angle > 0 ? 1 : -1), Vector3.up) * lastSpeed;
+                    }
+
+                    //Vector3.RotateTowards(lastSpeed, toForward, angleDelta, 0.0f);
 
                     lastPosition += lastSpeed * timeSlice;
                     timeSimulation += timeSlice;
