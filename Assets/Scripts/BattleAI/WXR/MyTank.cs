@@ -36,6 +36,7 @@ namespace WXR
             public float tankAngularSpeed;
             public float tankAcceleration;
             public float missileSpeed;
+            public int damagePerHit;
 
             public float expectDistance;
         }
@@ -65,6 +66,7 @@ namespace WXR
             knowledge.hisExpectedRoute = new List<Vector3>();
             knowledge.myRoute = new List<Vector3>(knowledge.myAgent.path.corners);
             knowledge.hisRoute = new List<Vector3>(knowledge.hisAgent.path.corners);
+            knowledge.damagePerHit = Match.instance.GlobalSetting.DamagePerHit;
         }
 
         private bool MyCanSeeOthers(Vector3 target)
@@ -277,14 +279,77 @@ namespace WXR
             if (knowledge.enemy.IsDead)
                 return 100;
 
-            //return 100;
-            return CalculateTime(knowledge.hisLastPosition, knowledge.enemy.Position, knowledge.hisRoute);
+            if (knowledge.enemy.NextDestination == target)
+                return CalculateTime(knowledge.hisLastPosition, knowledge.enemy.Position, knowledge.hisRoute);
+
+            return CalculateTime(knowledge.hisLastPosition, knowledge.enemy.Position,
+                new List<Vector3>(knowledge.enemy.CaculatePath(target).corners));
         }
 
         private float CalculateMyTime(Vector3 target)
         {
-            //return 10;
-            return CalculateTime(knowledge.myLastPosition, Position, knowledge.myRoute);
+            if (NextDestination == target)
+                return CalculateTime(knowledge.myLastPosition, Position, knowledge.myRoute);
+
+            return CalculateTime(knowledge.myLastPosition, Position,
+                new List<Vector3>(CaculatePath(target).corners));
+        }
+
+        private void Run()
+        {
+            bool hasStar = false;
+            float nearestDist = float.MaxValue;
+            Vector3 nearestStarPos = Vector3.zero;
+
+            foreach (var pair in Match.instance.GetStars())
+            {
+                Star s = pair.Value;
+                float dist = (s.Position - Position).sqrMagnitude;
+                //float dist = CalculateMyTime(s.Position);
+                if (s.IsSuperStar
+                    && (knowledge.enemy.NextDestination != s.Position
+                    || CalculateMyTime(s.Position) < CalculateHisTime(s.Position)))
+                {
+                    hasStar = true;
+                    nearestDist = dist;
+                    nearestStarPos = s.Position;
+                    break;
+                }
+                else
+                {
+                    if (dist < nearestDist
+                        && (knowledge.enemy.NextDestination != s.Position
+                    || CalculateMyTime(s.Position) < CalculateHisTime(s.Position)))
+                    {
+                        hasStar = true;
+                        nearestDist = dist;
+                        nearestStarPos = s.Position;
+                    }
+                }
+            }
+
+            int hisShoot = (HP - 1) / knowledge.damagePerHit + 1;
+            int myShoot = (knowledge.enemy.HP - 1) / knowledge.damagePerHit + 1;
+            if (hisShoot < 2
+                && (!hasStar
+                || CalculateMyTime(knowledge.myRebornPos) * ((float)hisShoot / 2.0f)
+                < CalculateMyTime(nearestStarPos)))
+            {
+                hasStar = false;
+            }
+
+            if (hasStar == true)
+            {
+                Move(nearestStarPos);
+            }
+            else if (!knowledge.enemy.IsDead && myShoot < hisShoot)
+            {
+                Move(knowledge.enemy.NextDestination);
+            }
+            else if (hisShoot < 4)
+            {
+                Move(knowledge.myRebornPos);
+            }
         }
 
         protected override void OnUpdate()
@@ -295,49 +360,7 @@ namespace WXR
             knowledge.hisRoute = new List<Vector3>(knowledge.hisAgent.path.corners);
 
             Shoot();
-
-            if (HP <= 50)
-            {
-                Move(Match.instance.GetRebornPos(Team));
-            }
-            else
-            {
-                bool hasStar = false;
-                float nearestDist = float.MaxValue;
-                Vector3 nearestStarPos = Vector3.zero;
-                foreach (var pair in Match.instance.GetStars())
-                {
-                    Star s = pair.Value;
-                    if (s.IsSuperStar
-                        && (knowledge.enemy.NextDestination != s.Position
-                        || CalculateMyTime(s.Position) < CalculateHisTime(s.Position)))
-                    {
-                        hasStar = true;
-                        nearestStarPos = s.Position;
-                        break;
-                    }
-                    else
-                    {
-                        float dist = (s.Position - Position).sqrMagnitude;
-                        if (dist < nearestDist
-                            && (knowledge.enemy.NextDestination != s.Position
-                        || CalculateMyTime(s.Position) < CalculateHisTime(s.Position)))
-                        {
-                            hasStar = true;
-                            nearestDist = dist;
-                            nearestStarPos = s.Position;
-                        }
-                    }
-                }
-                if (hasStar == true)
-                {
-                    Move(nearestStarPos);
-                }
-                else
-                {
-                    Move(Match.instance.GetRebornPos(Team));
-                }
-            }
+            Run();
 
             Debug.DrawLine(knowledge.hisLastPosition, knowledge.enemy.Position, Color.black, 20.0f);
             knowledge.myLastPosition = Position;

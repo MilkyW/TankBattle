@@ -1,12 +1,17 @@
 ﻿<Properties StartupConfiguration="{FA470E05-34A9-DF96-F3A0-23198318BFE5}|">
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/BattleAI/WXR/MyTank.cs">
     <Files>
-      <File FileName="Assets/Scripts/BattleAI/WXR/MyTank.cs" Line="212" Column="88" />
+      <File FileName="Assets/Scripts/BattleAI/WXR/MyTank.cs" Line="283" Column="105" />
       <File FileName="Assets/Scripts/Main/Physics.cs" Line="1" Column="1" />
       <File FileName="Assets/Scripts/BattleAI/TJQ/MyTank.cs" Line="24" Column="2" />
+      <File FileName="Assets/Scripts/Main/Tank.cs" Line="104" Column="40" />
     </Files>
   </MonoDevelop.Ide.Workbench>
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches>
+    <Watch file="../../../Assets/Scripts/BattleAI/WXR/MyTank.cs" line="211" offsetX="833" offsetY="4398" expression="toForward.magnitude" liveUpdate="False" />
+    <Watch file="../../../Assets/Scripts/BattleAI/WXR/MyTank.cs" line="213" offsetX="902" offsetY="4354" expression="lastSpeed.magnitude" liveUpdate="False" />
+    <Watch file="../../../Assets/Scripts/BattleAI/WXR/MyTank.cs" line="207" offsetX="921" offsetY="4300" expression="p.magnitude" liveUpdate="False" />
+  </MonoDevelop.Ide.DebuggingService.PinnedWatches>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="a200a0fb-bbaf-4d60-a711-1be4d75d58d8" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
