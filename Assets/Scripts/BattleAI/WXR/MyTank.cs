@@ -58,7 +58,7 @@ namespace WXR
             knowledge.missileSpeed = Match.instance.GlobalSetting.MissileSpeed;
             knowledge.myRebornPos = Match.instance.GetRebornPos(Team);
             knowledge.hisRebornPos = Match.instance.GetRebornPos(knowledge.enemy.Team);
-            knowledge.expectDistance = 20.0f;
+            knowledge.expectDistance = 10.0f;
             knowledge.myLastPosition = knowledge.myRebornPos;
             knowledge.hisLastPosition = knowledge.hisRebornPos;
             knowledge.myLastShoot = Vector3.zero;
@@ -324,6 +324,173 @@ namespace WXR
             {
                 Move(knowledge.myRebornPos);
             }
+            else if (!knowledge.enemy.IsDead)
+            {
+                Move(knowledge.enemy.NextDestination);
+            }
+
+            //Missile dangerousMissle = null;
+            //float minTime = 0;
+            //foreach (var m in Match.instance.GetOppositeMissiles(Team))
+            //{
+            //    Missile missle = m.Value;
+            //    RaycastHit raycastHit;
+            //    Physics.Raycast(missle.Position, missle.Velocity, out raycastHit, PhysicsUtils.LayerMaskScene);
+            //    Vector3 misslePosition = missle.Position;
+            //    Vector3 destination = raycastHit.point;
+
+            //    bool hit = false;
+            //    bool end = false;
+            //    Vector3 lastSpeed = (Position - knowledge.myLastPosition) / Time.deltaTime;
+            //    Vector3 lastPosition = Position;
+            //    float timeSimulation = 0;
+            //    const float timeSlice = 0.01f;
+            //    const float minSpeed = 0.01f;
+            //    foreach (var p in knowledge.myRoute)
+            //    {
+            //        if (hit || end)
+            //        {
+            //            break;
+            //        }
+
+            //        while ((lastPosition - p).sqrMagnitude > 1)
+            //        {
+            //            Vector3 toForward = p - lastPosition;
+
+            //            if (lastSpeed.magnitude < minSpeed)
+            //            {
+            //                lastSpeed = minSpeed * toForward.normalized;
+            //            }
+
+            //            float angle = Vector3.Angle(lastSpeed, toForward);
+
+            //            if (Mathf.Abs(angle) < 90)
+            //            {
+            //                if (lastSpeed.magnitude < knowledge.tankSpeed)
+            //                {
+            //                    if (lastSpeed.magnitude + knowledge.tankAcceleration * timeSlice > knowledge.tankSpeed)
+            //                        lastSpeed = knowledge.tankSpeed * lastSpeed.normalized;
+            //                    else
+            //                        lastSpeed = (lastSpeed.magnitude + knowledge.tankAcceleration * timeSlice) * lastSpeed.normalized;
+            //                }
+            //            }
+            //            else
+            //            {
+            //                if (lastSpeed.magnitude - knowledge.tankAcceleration * timeSlice > minSpeed)
+            //                    lastSpeed = (lastSpeed.magnitude - knowledge.tankAcceleration * timeSlice) * lastSpeed.normalized;
+            //                else
+            //                    lastSpeed = minSpeed * lastSpeed.normalized;
+            //            }
+
+            //            float angleDelta = knowledge.tankAngularSpeed * Mathf.Deg2Rad * timeSlice;
+
+            //            lastSpeed = Vector3.RotateTowards(lastSpeed, toForward, angleDelta, 0.0f);
+
+            //            lastPosition += lastSpeed * timeSlice;
+            //            misslePosition += missle.Velocity * timeSlice;
+            //            timeSimulation += timeSlice;
+
+            //            if ((misslePosition - destination).sqrMagnitude < 1)
+            //            {
+            //                end = true;
+            //                break;
+            //            }
+
+            //            if ((misslePosition - lastPosition).sqrMagnitude < 1)
+            //            {
+            //                hit = true;
+            //                break;
+            //            }
+            //        }
+            //    }
+
+            //    if (hit && timeSimulation > 1.0f && (dangerousMissle == null || timeSimulation < minTime))
+            //    {
+            //        dangerousMissle = missle;
+            //        minTime = timeSimulation;
+            //    }
+            //}
+
+            //Vector3 bestPosition = Vector3.zero;
+            //if (dangerousMissle != null)
+            //{
+            //    Vector3[] positionOffsets = { new Vector3(-1, 0, -1), new Vector3(-1, 0, 0), new Vector3(-1, 0, -1),
+            //    new Vector3(0, 0, -1), new Vector3(0, 0, 0), new Vector3(0, 0, -1),
+            //    new Vector3(1, 0, -1), new Vector3(1, 0, 0), new Vector3(1, 0, -1)};
+
+            //    Vector3 misslePosition = dangerousMissle.Position;
+            //    Vector3 lastSpeed = (Position - knowledge.myLastPosition) / Time.deltaTime;
+            //    Vector3 lastPosition = Position;
+            //    float timeSimulation = 0;
+            //    const float timeSlice = 0.01f;
+            //    const float minSpeed = 0.01f;
+            //    bool hit = false;
+            //    bool end = false;
+
+            //    for (int i = 0; i < positionOffsets.Length; i++)
+            //    {
+            //        positionOffsets[i] *= minTime * knowledge.tankSpeed;
+            //        positionOffsets[i] += Position;
+
+            //        foreach (var p in knowledge.myRoute)
+            //        {
+            //            if (hit || end)
+            //            {
+            //                break;
+            //            }
+
+            //            while ((lastPosition - p).sqrMagnitude > 1)
+            //            {
+            //                Vector3 toForward = p - lastPosition;
+
+            //                if (lastSpeed.magnitude < minSpeed)
+            //                {
+            //                    lastSpeed = minSpeed * toForward.normalized;
+            //                }
+
+            //                float angle = Vector3.Angle(lastSpeed, toForward);
+
+            //                if (Mathf.Abs(angle) < 90)
+            //                {
+            //                    if (lastSpeed.magnitude < knowledge.tankSpeed)
+            //                    {
+            //                        if (lastSpeed.magnitude + knowledge.tankAcceleration * timeSlice > knowledge.tankSpeed)
+            //                            lastSpeed = knowledge.tankSpeed * lastSpeed.normalized;
+            //                        else
+            //                            lastSpeed = (lastSpeed.magnitude + knowledge.tankAcceleration * timeSlice) * lastSpeed.normalized;
+            //                    }
+            //                }
+            //                else
+            //                {
+            //                    if (lastSpeed.magnitude - knowledge.tankAcceleration * timeSlice > minSpeed)
+            //                        lastSpeed = (lastSpeed.magnitude - knowledge.tankAcceleration * timeSlice) * lastSpeed.normalized;
+            //                    else
+            //                        lastSpeed = minSpeed * lastSpeed.normalized;
+            //                }
+
+            //                float angleDelta = knowledge.tankAngularSpeed * Mathf.Deg2Rad * timeSlice;
+
+            //                lastSpeed = Vector3.RotateTowards(lastSpeed, toForward, angleDelta, 0.0f);
+
+            //                lastPosition += lastSpeed * timeSlice;
+            //                misslePosition += dangerousMissle.Velocity * timeSlice;
+            //                timeSimulation += timeSlice;
+
+            //                if ((misslePosition - destination).sqrMagnitude < 1)
+            //                {
+            //                    end = true;
+            //                    break;
+            //                }
+
+            //                if ((misslePosition - lastPosition).sqrMagnitude < 1)
+            //                {
+            //                    hit = true;
+            //                    break;
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
         }
 
         protected override void OnUpdate()
